@@ -62,6 +62,8 @@ class Conversion implements EventHandler<ActionEvent> {
 	}
 	
 	public void handle(ActionEvent e) {
+		// TODO Use Regexes "(\\d+\\.\\d+)" and "([01]+)"
+		
 		if (this.type == "encrypt") {
 			// TODO implement conversion and use Encryptor
 		} else if (this.type == "decrypt") {
