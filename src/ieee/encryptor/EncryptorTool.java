@@ -8,8 +8,11 @@ import javafx.scene.control.Button;
 // import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
-
 import javafx.stage.Stage;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class EncryptorTool extends Application {
 
@@ -62,12 +65,39 @@ class Conversion implements EventHandler<ActionEvent> {
 	}
 	
 	public void handle(ActionEvent e) {
-		// TODO Use Regexes "(\\d+\\.\\d+)" and "([01]+)"
-		
+		// TODO Use Regexes "^(\\d+\\.\\d+)$" and "^([01]+)$"
+        Pattern floatRegex = Pattern.compile("^[+-]?[0-9]+([.][0-9]+)?$");
+        Pattern ieeeRegex = Pattern.compile("^[01]{32}$");
+
 		if (this.type == "encrypt") {
 			// TODO implement conversion and use Encryptor
+			String dec = this.decimal.getText();
+		    Matcher m = floatRegex.matcher(dec);
+		    
+		    if (m.matches()) {
+		    	float value = Float.parseFloat(m.group(0));
+		    	
+				IEEEFloat bin = Encryptor.encryptIEEEFloat(value);
+				
+				binary.setText(bin.toString());
+		    } else {
+				binary.setText("ERROR: Invalid Float Input!");
+		    }
 		} else if (this.type == "decrypt") {
 			// TODO implement conversion and use Encryptor
+			String bin = this.binary.getText();
+			Matcher m = floatRegex.matcher(bin);
+			
+			if (m.matches()) {
+		    	IEEEFloat value = Encryptor.getIEEEFloat(m.group());
+		    	
+				float dec = Encryptor.decryptIEEEFloat(value);
+				
+				decimal.setText(Float.toString(dec));
+		    } else {
+		    	decimal.setText("ERROR: Invalid Float Input!");
+		    }
+
 		} 
 	}
 }

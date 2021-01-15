@@ -3,6 +3,11 @@ package ieee.encryptor;
 public class Encryptor {
 	
 	public static IEEEFloat encryptIEEEFloat(float decimal) {
+		if (decimal == 0.0f) {
+			return new IEEEFloat("0", "00000000", "00000000000000000000000");
+		} else {}
+		
+		
 		String sign;
 		String exponent;
 		String mantissa = "";
@@ -40,12 +45,35 @@ public class Encryptor {
 		}
 		
 		// TODO Rounding
-		mantissa = mantissa.substring(0, 23);
-		
+		if (mantissa.charAt(23) == '0' || mantissa.substring(24, 26) == "00") {
+			//if (sign == "1") {
+			//	mantissa = binaryPlusOne(mantissa.substring(0, 23));
+			//} else {
+				mantissa = mantissa.substring(0, 23);
+			//}
+		} else {
+			//if (sign == "0") {
+				mantissa = binaryPlusOne(mantissa.substring(0, 23));
+			//} else {
+			//	mantissa = mantissa.substring(0, 23);
+			//}
+		}
+				
 		return new IEEEFloat(sign, exponent, mantissa);
 	}
 	
 	public static float decryptIEEEFloat(IEEEFloat binary) {
+		String special = binary.isSpecial();
+		if (special == "Zero") {
+			return 0.0f;
+		} else if (special == "Positive Infinity") {
+			return  Float.POSITIVE_INFINITY;
+		} else if (special == "Negative Infinity") {
+			return  Float.NEGATIVE_INFINITY;
+		} else if (special == "Not a Number") {
+			return  Float.NaN;
+		}
+		
 		int sign = decryptBinaryInt(binary.getSign());
 		if (sign == 0) {
 			sign = 1;
@@ -64,7 +92,7 @@ public class Encryptor {
 			}
 		}
 		
-		return sign * count; //(float) Math.pow(mantissa, exponent - 127 - 23);
+		return sign * count; 
 	}
 	
 	
@@ -100,6 +128,30 @@ public class Encryptor {
 		
 		return binary;
 	} 
+	
+	public static String binaryPlusOne(String binary) {
+		int len = binary.length();
+		char carry = '1';
+		String sum = "";
+		for (int i = 0; i < len; i++) {
+			if (carry == '1') {
+				if (binary.charAt(len - i - 1) == '0') {
+					sum = "1" + sum;
+					carry = '0';
+				} else {
+					sum = "0" + sum;
+				}
+			} else {
+				sum = binary.charAt(len - i - 1) + sum;
+			}
+		}
+		
+		if (carry == '1') {
+			sum = carry + sum;
+		}
+		
+		return sum;
+	}
 
 	public static boolean isBinary(String binary) {
 		for (int i = 0; i < binary.length(); i++) {
