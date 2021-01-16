@@ -34,7 +34,7 @@ public class IEEEFloat {
 			} else {
 				return "Negative Infinity";
 			}
-		} else if (this.exponent == "11111111" && !(this.mantissa == "00000000000000000000000")) {
+		} else if (this.exponent == "11111111") {
 			return "Not a Number";
 		} else {
 			return "Not Special";

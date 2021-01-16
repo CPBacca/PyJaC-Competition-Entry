@@ -3,9 +3,16 @@ package ieee.encryptor;
 public class Encryptor {
 	
 	public static IEEEFloat encryptIEEEFloat(float decimal) {
-		if (decimal == 0.0f) {
+
+		if (Float.isNaN(decimal)) {
+			return new IEEEFloat("0", "11111111", "00000000000000000000001");
+		} else if (decimal == 0.0f) {
 			return new IEEEFloat("0", "00000000", "00000000000000000000000");
-		} else {}
+		} else if (decimal == Float.POSITIVE_INFINITY) {
+			return new IEEEFloat("0", "11111111", "00000000000000000000000");
+		} else if (decimal == Float.NEGATIVE_INFINITY) {
+			return new IEEEFloat("1", "11111111", "00000000000000000000000");
+		} 
 		
 		
 		String sign;
@@ -31,7 +38,14 @@ public class Encryptor {
 		}
 		
 		exponent = binaryEncryptInt(127 + exponentOf2);
+		while (exponent.length() < 8) {
+			exponent = "0" + exponent;
+		}
+		
 		decimal--;
+		if (decimal == 0.0f) {
+			new IEEEFloat(sign, exponent, "00000000000000000000000");
+		}
 		
 		float powerOf2 = 0.5f;
 		while (mantissa.length() < 23+3) {
@@ -165,7 +179,7 @@ public class Encryptor {
 	
 	public static IEEEFloat getIEEEFloat(String binary) {
 		if (binary.length() == 32 && isBinary(binary)) {
-			return new IEEEFloat(binary.substring(0, 1), binary.substring(1, 10), binary.substring(10, 32));
+			return new IEEEFloat(binary.substring(0, 1), binary.substring(1, 9), binary.substring(9, 32));
 		}
 		return null;
 	}

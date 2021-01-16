@@ -155,7 +155,63 @@ class EncryptorTest {
 		String binary = Encryptor.binaryPlusOne("111111111");
 		assertEquals("1000000000", binary);
 	}
+	
+	/* ================================================================= */
 
+	@Test
+	void testIsSpecial0() {
+		IEEEFloat binary = new IEEEFloat("0", "00000000", "00000000000000000000000");
+		assertEquals("Zero", binary.isSpecial());
+	}
+	
+	@Test
+	void testIsSpecialPosInfin() {
+		IEEEFloat binary = new IEEEFloat("0", "11111111", "00000000000000000000000");
+		assertEquals("Positive Infinity", binary.isSpecial());
+	}
+	
+	@Test
+	void testIsSpecialNegInfin() {
+		IEEEFloat binary = new IEEEFloat("1", "11111111", "00000000000000000000000");
+		assertEquals("Negative Infinity", binary.isSpecial());
+	}
+	
+	@Test
+	void testIsSpecialNan1() {
+		IEEEFloat binary = new IEEEFloat("0", "11111111", "00000000000000010000000");
+		assertEquals("Not a Number", binary.isSpecial());
+	}
+
+	@Test
+	void testIsSpecialNan2() {
+		IEEEFloat binary = new IEEEFloat("0", "11111111", "11111111111111111111111");
+		assertEquals("Not a Number", binary.isSpecial());
+	}
+	
+	@Test
+	void testIsSpecialNan3() {
+		IEEEFloat binary = new IEEEFloat("0", "11111111", "00000000011100010000000");
+		assertEquals("Not a Number", binary.isSpecial());
+	}
+	
+	@Test
+	void testIsSpecialNan4() {
+		IEEEFloat binary = new IEEEFloat("0", "11111111", "00111111111000010000100");
+		assertEquals("Not a Number", binary.isSpecial());
+	}
+	
+	@Test
+	void testIsSpecialNan5() {
+		IEEEFloat binary = new IEEEFloat("0", "11111111", "00000000000000000000001");
+		assertEquals("Not a Number", binary.isSpecial());
+	}
+	
+	@Test
+	void testIsSpecialNan6() {
+		IEEEFloat binary = new IEEEFloat("0", "10000010", "11000100100010000000000");
+		assertEquals("Not Special", binary.isSpecial());
+	}
+	
 	/* ================================================================= */
 
 	@Test
@@ -178,7 +234,10 @@ class EncryptorTest {
 	
 	@Test
 	void testEncryptIEEEFloatNaN() {
-		IEEEFloat binary = Encryptor.encryptIEEEFloat(0);
+		IEEEFloat binary = Encryptor.encryptIEEEFloat(Float.NaN);
+		
+		assertEquals(binary.isSpecial(), "Not a Number");
+
 		assertEquals(binary.toString(), "01111111100000000000000000000001");
 	}
 	
@@ -189,9 +248,46 @@ class EncryptorTest {
 	}
 	
 	@Test
-	void testEncryptIEEEFloat() {
+	void testEncryptIEEEFloat2() {
+		IEEEFloat binary = Encryptor.encryptIEEEFloat(2);
+		assertEquals(binary.toString(), "01000000000000000000000000000000");
+	}
+	
+	@Test
+	void testEncryptIEEEFloatHalf() {
+		IEEEFloat binary = Encryptor.encryptIEEEFloat(0.5f);
+		assertEquals(binary.toString(), "00111111000000000000000000000000");
+	}
+	
+	@Test
+	void testEncryptIEEEFloatQuarter() {
+		IEEEFloat binary = Encryptor.encryptIEEEFloat(0.25f);
+		assertEquals(binary.toString(), "00111110100000000000000000000000");
+	}
+	
+	@Test
+	void testEncryptIEEEFloatMedium1() {
+		IEEEFloat binary = Encryptor.encryptIEEEFloat(3.65625f);
+		assertEquals(binary.toString(), "01000000011010100000000000000000");
+	}
+	
+	@Test
+	void testEncryptIEEEFloatMedium2() {
 		IEEEFloat binary = Encryptor.encryptIEEEFloat(14.1416015625f);
 		assertEquals(binary.toString(), "01000001011000100100010000000000");
+	}
+	
+	
+	@Test
+	void testEncryptIEEEFloatBig1() {
+		IEEEFloat binary = Encryptor.encryptIEEEFloat(-4.1091995257869218249879850191064178943634033203125E-12f);
+		assertEquals(binary.toString(), "10101100100100001001010001100001");
+	}
+	
+	@Test
+	void testEncryptIEEEFloatBig2() {
+		IEEEFloat binary = Encryptor.encryptIEEEFloat(-2475879930996807960121835520f);
+		assertEquals(binary.toString(), "11101100111111111111111111111111");
 	}
 	
 	
@@ -237,6 +333,20 @@ class EncryptorTest {
 		IEEEFloat ieee = new IEEEFloat("0", "10000010", "11000100100010000000000"); 
 		float floating = Encryptor.decryptIEEEFloat(ieee);
 		assertEquals(14.1416015625, floating);
+	}
+	
+	@Test
+	void testDecryptIEEEFloatBig1() {
+		IEEEFloat ieee = new IEEEFloat("1", "01011001", "00100001001010001100001"); 
+		float floating = Encryptor.decryptIEEEFloat(ieee);
+		assertEquals(-4.1091995257869218249879850191064178943634033203125E-12f, floating);
+	}
+	
+	@Test
+	void testDecryptIEEEFloatBig2() {
+		IEEEFloat ieee = new IEEEFloat("1", "11011001", "11111111111111111111111"); 
+		float floating = Encryptor.decryptIEEEFloat(ieee);
+		assertEquals(-2475879930996807960121835520f, floating);
 	}
 	
 	

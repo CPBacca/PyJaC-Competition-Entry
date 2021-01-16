@@ -65,37 +65,35 @@ class Conversion implements EventHandler<ActionEvent> {
 	}
 	
 	public void handle(ActionEvent e) {
-		// TODO Use Regexes "^(\\d+\\.\\d+)$" and "^([01]+)$"
-        Pattern floatRegex = Pattern.compile("^[+-]?[0-9]+([.][0-9]+)?$");
-        Pattern ieeeRegex = Pattern.compile("^[01]{32}$");
 
-		if (this.type == "encrypt") {
-			// TODO implement conversion and use Encryptor
+		if (this.type == "encrypt") {			
 			String dec = this.decimal.getText();
-		    Matcher m = floatRegex.matcher(dec);
-		    
-		    if (m.matches()) {
-		    	float value = Float.parseFloat(m.group(0));
-		    	
+	    	
+			try {
+				float value = Float.parseFloat(dec);
+			
 				IEEEFloat bin = Encryptor.encryptIEEEFloat(value);
 				
 				binary.setText(bin.toString());
-		    } else {
+				
+			} catch (Exception e1) {
 				binary.setText("ERROR: Invalid Float Input!");
-		    }
+			} 		
+		    
 		} else if (this.type == "decrypt") {
-			// TODO implement conversion and use Encryptor
 			String bin = this.binary.getText();
-			Matcher m = floatRegex.matcher(bin);
+
+	        Pattern ieeeRegex = Pattern.compile("^[01]{32}$");
+			Matcher m = ieeeRegex.matcher(bin);
 			
 			if (m.matches()) {
-		    	IEEEFloat value = Encryptor.getIEEEFloat(m.group());
+		    	IEEEFloat value = Encryptor.getIEEEFloat(bin);
 		    	
 				float dec = Encryptor.decryptIEEEFloat(value);
-				
+
 				decimal.setText(Float.toString(dec));
 		    } else {
-		    	decimal.setText("ERROR: Invalid Float Input!");
+		    	decimal.setText("ERROR: Invalid Binary Input!");
 		    }
 
 		} 
