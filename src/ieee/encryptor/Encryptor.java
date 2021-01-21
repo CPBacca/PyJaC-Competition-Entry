@@ -58,19 +58,14 @@ public class Encryptor {
 			powerOf2 /= 2;
 		}
 		
-		// TODO Rounding
 		if (mantissa.charAt(23) == '0' || mantissa.substring(24, 26) == "00") {
-			//if (sign == "1") {
-			//	mantissa = binaryPlusOne(mantissa.substring(0, 23));
-			//} else {
-				mantissa = mantissa.substring(0, 23);
-			//}
+			
+			mantissa = mantissa.substring(0, 23);
+			
 		} else {
-			//if (sign == "0") {
-				mantissa = binaryPlusOne(mantissa.substring(0, 23));
-			//} else {
-			//	mantissa = mantissa.substring(0, 23);
-			//}
+			
+			mantissa = binaryPlusOne(mantissa.substring(0, 23));
+			
 		}
 				
 		return new IEEEFloat(sign, exponent, mantissa);
@@ -124,6 +119,7 @@ public class Encryptor {
 		if (decimal == 0) {
 			return "0";
 		}
+		
 		String binary = "";
 		int power2 = 1;
 		while (power2 <= decimal) {

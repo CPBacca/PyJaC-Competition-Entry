@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-// import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -21,7 +20,6 @@ public class EncryptorTool extends Application {
 
 	
 	public static void main(String[] args) {
-		// TODO Implement GUI
 		launch(args);
 	}
 
@@ -29,7 +27,7 @@ public class EncryptorTool extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		VBox pane = new VBox();
-		
+
 		this.decimal = new TextArea("Enter decimal floating point here.");
 		this.binary = new TextArea("Enter binary IEEE float here.");
 		
